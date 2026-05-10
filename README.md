@@ -28,16 +28,15 @@ An end-to-end, rigorous implementation of continuous hyperparameter optimization
    6.2 Core Functional Modules
 7. Installation and Environment Setup
 8. Usage and Execution Instructions
-9. Complete Source Code Implementation
-10. Empirical Results and Performance
-   10.1 Quantitative Comparison Table
-   10.2 Convergence Trajectory Analysis
-11. Deep Discussion and Landscape Analysis
-    11.1 Parameter Sensitivity (Anisotropy)
-    11.2 Navigating Local Optima Traps
-    11.3 Constraint Enforcement Strategies
-12. Known Limitations and Future Scope
-13. License and Academic Declaration
+9. Empirical Results and Performance
+   9.1 Quantitative Comparison Table
+   9.2 Convergence Trajectory Analysis
+10. Deep Discussion and Landscape Analysis
+    10.1 Parameter Sensitivity (Anisotropy)
+    10.2 Navigating Local Optima Traps
+    10.3 Constraint Enforcement Strategies
+11. Known Limitations and Future Scope
+12. License and Academic Declaration
 
 ---
 
@@ -251,7 +250,7 @@ Execution Flow and Expected Output:
 
 ## 9. Empirical Results and Performance
 
-### 10.1 Quantitative Comparison Table
+### 9.1 Quantitative Comparison Table
 The following results were obtained utilizing a Swarm/Population size of 10 across a maximum of 10 iterations, yielding exactly 100 objective function evaluations per algorithm.
 
 Optimization Algorithm  | Optimal Learning Rate (Real) | Optimal Dropout Rate | Best Validation Loss | Convergence Speed
@@ -259,7 +258,7 @@ Optimization Algorithm  | Optimal Learning Rate (Real) | Optimal Dropout Rate | 
 Particle Swarm (PSO)    | 0.01197                      | 0.296                | 0.1740               | Iteration 8
 Genetic Algorithm (GA)  | 0.00853                      | 0.122                | 0.1759               | Generation 5
 
-### 10.2 Convergence Trajectory Analysis
+### 9.2 Convergence Trajectory Analysis
 Both metaheuristics successfully demonstrated the capacity to rapidly bypass unviable, highly-penalized parameter combinations (e.g., extremely high learning rates leading to gradient explosion) to locate high-performing regions in the continuous space. 
 
 Particle Swarm Optimization:
@@ -272,17 +271,17 @@ GA showed massive improvements in the first 3 generations as tournament selectio
 
 ## 10. Deep Discussion and Landscape Analysis
 
-### 11.1 Parameter Sensitivity (Anisotropy)
+### 10.1 Parameter Sensitivity (Anisotropy)
 By visualizing the historical evaluation coordinates on a scatter plot, we can analyze the geometry of the CNN loss landscape. The objective function is highly anisotropic (behaves differently along different axes).
 * Learning Rate Axis (Steep and Sensitive): The objective landscape is incredibly steep along the alpha axis. Particles evaluating values outside the narrow 10^-3 to 10^-2 corridor experienced massive loss spikes. Any value approaching 10^-1 caused the Adam optimizer to overshoot minima entirely, failing to converge.
 * Dropout Rate Axis (Flat and Robust): Conversely, the landscape proved highly robust to changes in the dropout dimension. Configurations varying widely between 0.10 and 0.35 resulted in near-identical validation metrics. The algorithms correctly identified that precise structural regularization was less critical than achieving the optimal optimization step-size.
 
-### 11.2 Navigating Local Optima Traps
+### 10.2 Navigating Local Optima Traps
 Given the restrictive evaluation budget (100 total objective function calls per algorithm), local optima posed a severe and ever-present threat. Deep learning landscapes are riddled with saddle points and shallow local minima.
 * GA Stagnation: The Genetic Algorithm exhibited a clear tendency to plateau around Generation 5. Without a massive population (e.g., 100+) to sustain diverse genetic material, the tournament selection mechanism rapidly homogenized the gene pool. Once the population lost diversity, arithmetic crossover simply averaged similar numbers, trapping the algorithm in a shallow local optimum.
 * PSO Momentum to the Rescue: PSO successfully escaped the early stagnation that trapped the GA. The inertia weight (w=0.5) provided mathematical momentum. Even when a particle reached a local minimum, its accumulated velocity forced it to overshoot the minimum slightly, allowing the swarm to traverse small loss ridges and settle into a deeper, superior basin of attraction by Iteration 8.
 
-### 11.3 Constraint Enforcement Strategies
+### 10.3 Constraint Enforcement Strategies
 In unconstrained mathematical optimization, bounds are a suggestion. In software engineering and deep learning, bounds are a hard requirement. Feeding the PyTorch optimizer a negative learning rate causes a fatal ValueError runtime exception, immediately terminating the script.
 * In PSO, constraints were enforced strictly via post-velocity positional clipping. If a velocity update pushed a particle's learning rate to -5.0 (log scale), it was hard-clamped back to -4.0 before evaluating the objective function.
 * In GA, boundaries were enforced immediately following the Gaussian mutation step. This strict architectural boundary mapping guaranteed 100% functional feasibility and zero software crashes across all 200 model evaluations.
