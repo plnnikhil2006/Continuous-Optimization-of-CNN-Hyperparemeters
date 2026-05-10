@@ -132,21 +132,18 @@ Key design choices:
 ```text
 CNN_Hyperparameter_Optimization/
 |
-|-- docs/                       # Documentation and LaTeX report
+|-- report/                       # Documentation and LaTeX report
 |   |-- report.tex              
 |   `-- report.pdf              
 |
-|-- notebooks/                  # Interactive experimentation
-|   `-- OT_Project.ipynb        
+|                  
+|-- OT_Project.ipynb        # Interactive experimentation
 |
-|-- src/                        # Main source code
-|   `-- main.py                 
+|                      
+|-- main.py            # Main source code    
+|       
+|-- optimization_results.png  # Generated output artifacts
 |
-|-- results/                    # Generated output artifacts
-|   `-- optimization_results.png
-|
-|-- .gitignore                  # Git tracking exclusions
-|-- requirements.txt            # Python dependencies
 |-- summary.md                  # High-level project summary
 `-- README.md                   # This file
 ```
